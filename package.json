@@ -1,0 +1,24 @@
+{
+  "name": "collman",
+  "version": "0.0.0",
+  "description": "Collection Manager multi-OS, in JS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "collection",
+    "manager",
+    "media",
+    "movie",
+    "music",
+    "book",
+    "game",
+    "catalog"
+  ],
+  "author": "JRD <jrd@enialis.net>",
+  "license": "GPLv2+",
+  "dependencies": {
+    "sqlite3": "^2.2.3"
+  }
+}
