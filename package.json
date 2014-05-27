@@ -19,6 +19,7 @@
   "author": "JRD <jrd@enialis.net>",
   "license": "GPLv2+",
   "dependencies": {
-    "sqlite3": "^2.2.3"
+    "sqlite3": "^2.2.3",
+    "express": "^4.3.1"
   }
 }
