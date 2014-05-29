@@ -11,7 +11,7 @@ app.get(/^\/bonjour\/(.+)$/, function(req, res) {
   res.send('Bonjour ' + req.params[0] + ' !');
 });
 app.get('/bonsoir/:name', function(req, res) {
-  res.send('Bonsoir ' + req.params['name'] + ' !');
+  res.send('Bonsoir ' + req.params.name + ' !');
 });
 app.use(function(req, res, next) {
   console.log('%s %s', req.method, req.url);
@@ -19,3 +19,4 @@ app.use(function(req, res, next) {
 });
 app.use('/contenu', express.static(__dirname));
 app.listen(3000);
+console.log('http://localhost:3000');
