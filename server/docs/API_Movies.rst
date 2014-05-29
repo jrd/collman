@@ -1,24 +1,19 @@
-==
+==========
 API Movies
-==
+==========
 
 Urls
 ====
 
-.. code
-
-  /list/movies/DEFAULT
-    ^     ^       ^
-  action type    nom
-
-  /get/movie/ID
+- /list/movies/DEFAULT
+- /get/movie/ID
 
 Json
 ====
 
 - /list/movies/NAME
 
-.. code: json
+.. code:: js
 
   {
     name: NAME,
@@ -43,7 +38,7 @@ Json
 
 - /get/movie/ID
 
-.. code: json
+.. code:: js
 
   {
     id: ID,
