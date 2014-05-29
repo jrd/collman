@@ -22,10 +22,10 @@ app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-app.use('/', routes);
-app.use('/users', users);
+var routesDef = require('./routes/default');
+var routesMovie = require('./routes/movie');
+app.use('/', routesDef);
+app.use('/', routesMovie);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
