@@ -6,7 +6,7 @@ Urls
 ====
 
 - /list/movies/DEFAULT
-- /get/movie/ID
+- /get/movie/DEFAULT/ID
 
 Json
 ====
@@ -36,7 +36,7 @@ Json
     ]
   }
 
-- /get/movie/ID
+- /get/movie/NAME/ID
 
 .. code:: js
 
