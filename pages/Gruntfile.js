@@ -17,7 +17,9 @@ module.exports = function(grunt) {
 
 	// Define the configuration for all the tasks
 	grunt.initConfig({
-
+		globalConfig:{
+		  dest: '../server/public'
+		 },
 		// Watches files for changes and runs tasks based on the changed files
 		watch : {
 			js : {
@@ -43,7 +45,7 @@ module.exports = function(grunt) {
 			dist : {
 				files : [ {
 					dot : true,
-					src : [ 'dist/*' ]
+					src : [ '<%= globalConfig.dest %>/*' ]
 				} ]
 			}
 		},
@@ -58,14 +60,14 @@ module.exports = function(grunt) {
 				src : [ 'app/scripts/app.js', 'app/scripts/directives/*.js',
 						'app/scripts/filters/*.js', 'app/scripts/controllers/**/*.js',
 						'app/scripts/directives/**/*.js', 'app/scripts/**/*.js' ],
-				dest : 'dist/js/app.js'
+				dest : '<%= globalConfig.dest %>/js/app.js'
 			},
 			vendors: {
 				src: [
 					'app/bower_components/angular/angular.js',
 					'app/bower_components/angular-resource/angular-resource.js',
 					'app/bower_components/angular-route/angular-route.js'],
-				dest: 'dist/js/vendor.js'
+				dest: '<%= globalConfig.dest %>/js/vendor.js'
 			}
 		},
 		less : {
@@ -74,7 +76,7 @@ module.exports = function(grunt) {
 					yuicompress : true
 				},
 				files : {
-					"dist/css/collman.css" : "app/less/main.less"
+					"<%= globalConfig.dest %>/css/collman.css" : "app/less/main.less"
 				}
 			}
 		},
@@ -86,7 +88,7 @@ module.exports = function(grunt) {
 					expand : true,
 					dot : true,
 					cwd : 'app/',
-					dest : 'dist/',
+					dest : '<%= globalConfig.dest %>/',
 					src : [ '*.{ico,png,txt}', '.htaccess', '*.html',
 							'views/{,*/}*.html', 'images/{,*/}*.{webp}',
 							'fonts/*' ]
