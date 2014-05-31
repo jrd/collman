@@ -42,6 +42,7 @@ module.exports = function(grunt) {
 
 		// Empties folders to start fresh
 		clean : {
+      options: { force: true }, // shut your mouth Grunt!
 			dist : {
 				files : [ {
 					dot : true,
