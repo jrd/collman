@@ -45,7 +45,7 @@ module.exports = function(grunt) {
 			dist : {
 				files : [ {
 					dot : true,
-					src : [ '<%= globalConfig.dest %>/*' ]
+					src : [ '<%= globalConfig.dest %>/*.html', '<%= globalConfig.dest %>/views/*', '<%= globalConfig.dest %>/js/*', '<%= globalConfig.dest %>/css/*' ]
 				} ]
 			}
 		},
@@ -76,7 +76,7 @@ module.exports = function(grunt) {
 					yuicompress : true
 				},
 				files : {
-					"<%= globalConfig.dest %>/css/collman.css" : "app/less/main.less"
+					'<%= globalConfig.dest %>/css/collman.css' : 'app/less/main.less'
 				}
 			}
 		},
