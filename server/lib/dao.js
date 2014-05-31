@@ -1,4 +1,6 @@
 var sq3 = require('sqlite3').verbose();
+var P = require('promised-io/promise');
+var promiseme = require('./promise').promiseme;
 var fs = require('fs');
 
 function getPath(dbType, dbName) {
@@ -51,150 +53,126 @@ function deleteDb(dbType, dbName) {
   }
 }
 
-function chainCall() {
-  var max = Math.floor(arguments.length / 2) * 2;
-  var nextFn = null;
-  var newNextFn = null;
-  var fnCall;
-  var fnCallback;
-  var errorCallback = arguments[max]; // the callback to call in case of an error on the chain
-  var makeNewCallback = function(fnCallback, nextFn, ctx) {
-    return function () {
-      var args = Array.prototype.slice.call(arguments);
-      args.push(ctx);
-      var newctx = fnCallback.apply(fnCallback, args);
-      if (newctx === false) {
-        errorCallback();
-      } else if (nextFn) { // Chain after returning from the callback
-        nextFn(newctx);
-      }
+function findMovie(db, id) {
+  var jsonPromise = P.Deferred();
+  var json = {
+    id: null,
+    title: null,
+    origTitle: null,
+    rlzYear: null,
+    length: null,
+    countries: null,
+    directors: null,
+    producers: null,
+    cast: null,
+    synopsys: null,
+    format: null,
+    tags: null,
+    languages: null,
+    subtitles: null,
+    region: null,
+    serie: null,
+    volume: null,
+    numberOfDisks: null
+  };
+  var error = false;
+  var dbGet = promiseme(db.get, db);
+  var dbAll = promiseme(db.all, db);
+  var fnError = function(name) {
+    return function(err) {
+      error = true;
+      throw new Error("Error for " + name + ": " + err);
     };
   };
-  for (var i = max - 1; i >= 0; i-=2) { // from last to first, step 2
-    fnCallback = arguments[i]; // Initial callback
-    fnCall = arguments[i - 1];
-    /*jshint loopfunc:true*/
-    newNextFn = function(fnCall, fnCallback, nextFn) {
-      return function(ctx) {
-        fnCall(makeNewCallback(fnCallback, nextFn, ctx), ctx);
-      };
-    }(fnCall, fnCallback, nextFn); // The final function to run, with arguments binded.
-    nextFn = newNextFn;
-  }
-  nextFn({}); // Trigger the first call, that will chain the others
-}
-
-function findMovie(db, id, callback) {
-  chainCall(
-    function(callback, ctx) {
-      db.get('SELECT * FROM Movie WHERE id=$id', { $id: id }, callback);
-    },
-    function(err, movie, ctx) {
-      var json;
-      if (movie && movie.length) {
-        json = {
-          id: movie.id,
-          title: movie.title,
-          origTitle: movie.title_orig,
-          rlzYear: movie.rlz_year,
-          length: movie.length,
-          countries: null,
-          directors: null,
-          producers: null,
-          cast: null,
-          synopsys: movie.synopsys,
-          format: movie.format,
-          tags: null,
-          languages: null,
-          subtitles: null,
-          region: movie.region,
-          serie: movie.serie,
-          volume: movie.volume,
-          numberOfDisks: movie.number_of_disks
-        };
-        return {movieId: movie.id, json: json};
+  P.all([
+    dbGet("SELECT * FROM Movie WHERE id=$id", { $id: id }).then(
+      function(ctx) {
+        var movie = ctx[1];
+        if (!error && movie && movie.length) {
+          json.id = movie.id;
+          json.title = movie.title;
+          json.origTitle = movie.title_orig;
+          json.rlzYear = movie.rlz_year;
+          json.length = movie.length;
+          json.synopsys = movie.synopsys;
+          json.format = movie.format;
+          json.region = movie.region;
+          json.serie = movie.serie;
+          json.volume = movie.volume;
+          json.numberOfDisks = movie.number_of_disks;
+        }
+      }, fnError('movie')),
+    dbAll("SELECT code FROM MovieCountry WHERE movie_id=$id", { $id: id }).then(
+      function(ctx) {
+        var countries = ctx[1];
+        if (!error && countries && countries.length) {
+          json.countries = countries.map(function (country) {
+            return country.code;
+          });
+        }
+      }, fnError('countries')),
+    dbAll("SELECT * FROM Personne WHERE role='director' AND movie_id=$id", { $id: id }).then(
+      function(ctx) {
+        var directors = ctx[1];
+        if (!error && directors && directors.length) {
+          json.directors = directors.map(function (director) {
+            return director.firstname + ' ' + director.lastname;
+          });
+        }
+      }, fnError('directors')),
+    dbAll("SELECT * FROM Personne WHERE role='producer' AND movie_id=$id", { $id: id }).then(
+      function(ctx) {
+        var producers = ctx[1];
+        if (!error && producers && producers.length) {
+          json.producers = producers.map(function (producer) {
+            return producer.firstname + ' ' + producer.lastname;
+          });
+        }
+      }, fnError('producers')),
+    dbAll("SELECT mc.character, p.firstname, p.lastname FROM MovieCast mc, Personne p WHERE mc.movie_id=$id AND mc.actor_id = p.id", { $id: id }).then(
+      function(ctx) {
+        var actors = ctx[1];
+        if (!error && actors && actors.length) {
+          json.cast = actors.map(function (actor) {
+            return {actor: actor.firstname + ' ' + actor.lastname, character: actor.character};
+          });
+        }
+      }, fnError('actors')),
+    dbAll("SELECT tag FROM Tag WHERE movie_id=$id", { $id: id }).then(
+      function(ctx) {
+        var tags = ctx[1];
+        if (!error && tags && tags.length) {
+          json.tags = tags.map(function (tag) {
+            return tag.tag;
+          });
+        }
+      }, fnError('tags')),
+    dbAll("SELECT l.* FROM Language l, MovieLang ml WHERE ml.movie_id=$id AND ml.code = l.code", { $id: id }).then(
+      function(ctx) {
+        var langs = ctx[1];
+        if (!error && langs && langs.length) {
+          json.languages = langs;
+        }
+      }, fnError('languages')),
+    dbAll("SELECT l.* FROM Language l, MovieSub ms WHERE ms.movie_id=$id AND ms.code = l.code", { $id: id }).then(
+      function(ctx) {
+        var langs = ctx[1];
+        if (!error && langs && langs.length) {
+          json.subtitles = langs;
+        }
+      }, fnError('subtitles'))
+  ]).then(
+    function(array) {
+      if (json.id !== null) {
+        jsonPromise.resolve(json);
       } else {
-        return false;
+        jsonPromise.resolve(null);
       }
-    },
-    function(callback, ctx) {
-      db.all('SELECT code FROM MovieCountry WHERE movie_id=$id', { $id: ctx.movieId }, callback);
-    },
-    function(err, countries, ctx) {
-      if (countries && countries.length) {
-        ctx.json.countries = countries.map(function (country) {
-          return country.code;
-        });
-      }
-      return ctx;
-    },
-    function(callback, ctx) {
-      db.all("SELECT * FROM Personne WHERE role='director' AND movie_id=$id", { $id: ctx.movieId }, callback);
-    },
-    function(err, directors, ctx) {
-      if (directors && directors.length) {
-        ctx.json.directors = directors.map(function (director) {
-          return director.firstname + ' ' + director.lastname;
-        });
-      }
-      return ctx;
-    },
-    function(callback, ctx) {
-      db.all("SELECT * FROM Personne WHERE role='producer' AND movie_id=$id", { $id: ctx.movieId }, callback);
-    },
-    function(err, producers, ctx) {
-      if (producers && producers.length) {
-        ctx.json.producers = producers.map(function (producer) {
-          return producer.firstname + ' ' + producer.lastname;
-        });
-      }
-      return ctx;
-    },
-    function(callback, ctx) {
-      db.all("SELECT mc.character, p.firstname, p.lastname FROM MovieCast mc, Personne p WHERE mc.movie_id=$id AND mc.actor_id = p.id", { $id: ctx.movieId }, callback);
-    },
-    function(err, actors, ctx) {
-      if (actors && actors.length) {
-        ctx.json.cast = actors.map(function (actor) {
-          return {actor: actor.firstname + ' ' + actor.lastname, character: actor.character};
-        });
-      }
-      return ctx;
-    },
-    function(callback, ctx) {
-      db.all("SELECT tag FROM Tag WHERE movie_id=$id", { $id: ctx.movieId }, callback);
-    },
-    function(err, tags, ctx) {
-      if (tags && tags.length) {
-        ctx.json.tags = tags.map(function (tag) {
-          return tag.tag;
-        });
-      }
-      return ctx;
-    },
-    function(callback, ctx) {
-      db.all("SELECT l.* FROM Language l, MovieLang ml WHERE ml.movie_id=$id AND ml.code = l.code", { $id: ctx.movieId }, callback);
-    },
-    function(err, langs, ctx) {
-      if (langs && langs.length) {
-        ctx.json.languages = langs;
-      }
-      return ctx;
-    },
-    function(callback, ctx) {
-      db.all("SELECT l.* FROM Language l, MovieSub ms WHERE ms.movie_id=$id AND ms.code = l.code", { $id: ctx.movieId }, callback);
-    },
-    function(err, langs, ctx) {
-      if (langs && langs.length) {
-        ctx.json.subtitles = langs;
-      }
-      callback(ctx.json);
-      return ctx;
-    },
-    function () {
-      callback(null);
+    }, function(err) {
+      jsonPromise.reject(err.message);
     }
   );
+  return jsonPromise.promise;
 }
 
 exports.selectDb = selectDb;

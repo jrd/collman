@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mocks = require('../lib/mocks');
 var dao = require('../lib/dao');
+var P = require('promised-io/promise');
 
 /////////////////////////////
 // MOVIES ///////////////////
@@ -16,16 +17,18 @@ router.get('/list/movies/:name', function(req, res) {
 
 router.get('/get/movie/:name/:id', function(req, res) {
   var db = dao.selectDb('movie', req.params.name);
-  dao.findMovie(db, req.params.id, function(movie) {
-    var json;
-    if (movie) {
-      json = movie;
-    } else {
-      json = mocks.movie;
-      json.id = req.params.id;
-    }
-    res.json(json);
-  });
+  dao.findMovie(db, req.params.id).then(
+    function(json) {
+      if (json === null) {
+        json = mocks.movie;
+        json.id = parseInt(req.params.id);
+        json.title = json.title + ' (Mock)';
+      }
+      res.json(json);
+    }, function(err) {
+      console.log(err);
+      res.send(err);
+    });
 });
 
 module.exports = router;
