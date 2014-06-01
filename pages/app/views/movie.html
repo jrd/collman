@@ -1,3 +1,15 @@
-<h1>Movie: {{movie.title}}</h1>
 
-{{movie}}
+<div class="movie">
+<h1>Movie: {{movie.title}}</h1>
+<div class=synopsis">
+{{movie.synopsys}}
+</div>
+<div class="keyvalue">
+<div class="key">Titre original :</div><div class="value">{{movie.origTitle}}</div>
+<div class="key">Année :</div><div class="value">{{movie.rlzYear}}</div>
+<div class="key">Durée :</div><div class="value">{{movie.length}} minutes</div>
+
+</div>
+
+
+</div>
