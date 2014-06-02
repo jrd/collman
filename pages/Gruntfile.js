@@ -58,7 +58,7 @@ module.exports = function(grunt) {
 	
 		concat : {
 			application : {
-				src : [ 'app/scripts/app.js', 'app/scripts/directives/*.js',
+				src : [ 'app/scripts/lib/*.js', 'app/scripts/app.js', 'app/scripts/directives/*.js',
 						'app/scripts/filters/*.js', 'app/scripts/controllers/**/*.js',
 						'app/scripts/directives/**/*.js', 'app/scripts/**/*.js' ],
 				dest : '<%= globalConfig.dest %>/js/app.js'
