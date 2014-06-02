@@ -23,7 +23,7 @@ module.exports = function(grunt) {
 		// Watches files for changes and runs tasks based on the changed files
 		watch : {
 			js : {
-				files : [ 'app/scripts/{,*/}*.js' ,'app/less/{,*/}*.less','app/views/{,*/}*.html'],
+				files : [ 'app/scripts/{,*/}*.js' ,'app/less/{,*/}*.less','app/views/{,*/}*.html', 'app/images/{,*/}*.*'],
 				tasks : [ 'dist' ],
 				options : {
 					livereload : true
@@ -46,7 +46,7 @@ module.exports = function(grunt) {
 			dist : {
 				files : [ {
 					dot : true,
-					src : [ '<%= globalConfig.dest %>/*.html', '<%= globalConfig.dest %>/views/*', '<%= globalConfig.dest %>/js/*', '<%= globalConfig.dest %>/css/*' ]
+					src : [ '<%= globalConfig.dest %>/views/*', '<%= globalConfig.dest %>/js/*', '<%= globalConfig.dest %>/css/*', '<%= globalConfig.dest %>/images/*', '<%= globalConfig.dest %>/fonts/*' ]
 				} ]
 			}
 		},
@@ -90,9 +90,7 @@ module.exports = function(grunt) {
 					dot : true,
 					cwd : 'app/',
 					dest : '<%= globalConfig.dest %>/',
-					src : [ '*.{ico,png,txt}', '.htaccess', '*.html',
-							'views/{,*/}*.html', 'images/{,*/}*.{webp}',
-							'fonts/*' ]
+					src : [ 'views/{,*/}*.html', 'images/{,*/}*.*',	'fonts/*' ]
 				} ]
 			}
 		}
