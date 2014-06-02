@@ -3,7 +3,4 @@ bower_components
 dist
 .project
 *.sqlite3
-server/public/*.html
-server/public/css
-server/public/js
-server/public/views
+server/public
