@@ -1,23 +1,28 @@
 var express = require('express');
 var router = express.Router();
 var mocks = require('../lib/mocks');
-var dao = require('../lib/dao');
-var P = require('promised-io/promise');
+var dao = require('../lib/movie_dao');
 
 /////////////////////////////
 // MOVIES ///////////////////
 /////////////////////////////
 
 router.get('/list/movies/:name', function(req, res) {
-  var db = dao.selectDb('movie', req.params.name);
-  var json = mocks.moviesCollection;
-  json.name = req.params.name;
-  res.json(json);
+  dao.allMovies(req.params.name).then(
+    function(json) {
+      if (json === null) {
+        json = mocks.moviesCollection;
+        json.name = req.params.name;
+      }
+      res.json(json);
+    }, function(err) {
+      console.log(err);
+      res.send(err);
+    });
 });
 
 router.get('/get/movie/:name/:id', function(req, res) {
-  var db = dao.selectDb('movie', req.params.name);
-  dao.findMovie(db, req.params.id).then(
+  dao.findMovie(req.params.name, req.params.id).then(
     function(json) {
       if (json === null) {
         json = mocks.movie;
@@ -29,6 +34,10 @@ router.get('/get/movie/:name/:id', function(req, res) {
       console.log(err);
       res.send(err);
     });
+});
+
+router.get('/add/movie/:name', function(req, res) {
+  res.send("To be implemented");
 });
 
 module.exports = router;

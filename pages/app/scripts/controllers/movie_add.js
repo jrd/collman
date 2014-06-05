@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('collMan')
-  .controller('MoviesCtrl',['$scope','$routeParams',
+  .controller('MovieAddCtrl',['$scope','$routeParams',
     function ($scope, $routeParams) {
      
     }
