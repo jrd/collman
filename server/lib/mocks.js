@@ -3,7 +3,7 @@ exports.moviesCollection = {
   totalSize: 1,
   data: [{
     id: 1,
-    title: "Evil Dead 3 : L'armée des ténèbres",
+    title: "Evil Dead 3 : L'armée des ténèbres (mock)",
     origTitle: "Evil Dead 3: Army of the shadows",
     rlzYear: 2014,
     length: 120,
@@ -18,7 +18,7 @@ exports.moviesCollection = {
 };
 exports.movie = {
   id: 1,
-  title: "Evil Dead 3 : L'armée des ténèbres",
+  title: "Evil Dead 3 : L'armée des ténèbres (mock)",
   origTitle: "Evil Dead 3: Army of darkness",
   rlzYear: 2014,
   length: 120,

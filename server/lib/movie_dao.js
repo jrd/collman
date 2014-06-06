@@ -3,7 +3,6 @@ var dao = require('./dao');
 var P = require('promised-io/promise');
 var promiseme = require('./promise').promiseme;
 var promiseEach = require('./promise').promiseEach;
-var mocks = require('./mocks');
 
 var MovieDao = function(dbName) {
   var _super = dao.AbstractDao('movie', dbName);

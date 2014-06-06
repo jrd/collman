@@ -27,7 +27,6 @@ router.get('/get/movie/:name/:id', function(req, res) {
       if (json === null) {
         json = mocks.movie;
         json.id = parseInt(req.params.id);
-        json.title = json.title + ' (Mock)';
       }
       res.json(json);
     }, function(err) {
@@ -36,7 +35,7 @@ router.get('/get/movie/:name/:id', function(req, res) {
     });
 });
 
-router.get('/add/movie/:name', function(req, res) {
+router.post('/add/movie/:name', function(req, res) {
   res.send("To be implemented");
 });
 
