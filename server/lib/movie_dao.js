@@ -2,6 +2,7 @@ require('./common');
 var dao = require('./dao');
 var P = require('promised-io/promise');
 var promiseme = require('./promise').promiseme;
+var promisemeOnComplete = require('./promise').promisemeOnComplete;
 var mocks = require('./mocks');
 
 var MovieDao = function(dbName) {
@@ -143,8 +144,107 @@ var MovieDao = function(dbName) {
   };
   _super.findAll = function() {
     var jsonPromise = P.Deferred();
-    var json = mocks.moviesCollection;
-    jsonPromise.resolve(json);
+    var json = {
+      name: null,
+      totalSize: null,
+      data: []
+    };
+    var error = false;
+    var dbEach = promisemeOnComplete(_super.getDb().each, _super.getDb());
+    var dbAll = promiseme(_super.getDb().all, _super.getDb());
+    var fnError = function(name) {
+      return function(err) {
+        error = true;
+        throw new Error("Error for " + name + ": " + err);
+      };
+    };
+    var pMovies = dbEach("SELECT * FROM Movie ORDER BY title, id");
+    var defferedAllDone = new P.Deferred();
+    P.all([
+      pMovies.eachTime.then(
+        function(ctx) {
+          var movie = ctx[1];
+          if (!error && movie && movie.length) {
+            var jsonMovie = {
+              id: movie.id,
+              title: movie.title,
+              origTitle: movie.title_orig,
+              rlzYear: movie.rlz_year,
+              length: movie.length,
+              countries: [],
+              format: movie.format,
+              tags: [],
+              languages: [],
+              subtitles: [],
+              serie: movie.serie,
+              volume: movie.volume
+            };
+            P.all([
+              dbAll("SELECT code FROM MovieCountry WHERE movie_id=$id", { $id: movie.id }).then(
+                function(ctx) {
+                  var countries = ctx[1];
+                  if (!error && countries && countries.length) {
+                    jsonMovie.countries = countries.map(function (country) {
+                      return country.code;
+                    });
+                  }
+                }, fnError('countries')),
+              dbAll("SELECT tag FROM Tag WHERE movie_id=$id", { $id: movie.id }).then(
+                function(ctx) {
+                  var tags = ctx[1];
+                  if (!error && tags && tags.length) {
+                    jsonMovie.tags = tags.map(function (tag) {
+                      return tag.tag;
+                    });
+                  }
+                }, fnError('tags')),
+              dbAll("SELECT l.* FROM Language l, MovieLang ml WHERE ml.movie_id=$id AND ml.code = l.code", { $id: movie.id }).then(
+                function(ctx) {
+                  var langs = ctx[1];
+                  if (!error && langs && langs.length) {
+                    jsonMovie.languages = langs;
+                  }
+                }, fnError('languages')),
+              dbAll("SELECT l.* FROM Language l, MovieSub ms WHERE ms.movie_id=$id AND ms.code = l.code", { $id: movie.id }).then(
+                function(ctx) {
+                  var langs = ctx[1];
+                  if (!error && langs && langs.length) {
+                    jsonMovie.subtitles = langs;
+                  }
+                }, fnError('subtitles'))
+            ]).then(
+              function(array) {
+                json.data.push(jsonMovie);
+                // Will not work with more than 1.
+                // Need to find another technique.
+                defferedAllDone.resolve(true);
+              }, fnError('movie')
+            );
+          }
+        }, fnError('movies')),
+      pMovies.onComplete.then(
+        function(ctx) {
+          var nb = ctx[1];
+          if (!error) {
+            json.totalSize = nb;
+            json.name = _super.getDbName();
+          }
+        }, fnError('movies')),
+      defferedAllDone.promise.then(
+        function(ctx) {
+          // Nothing to do but will wait for me
+        }, fnError('movies'))
+    ]).then(
+      function(array) {
+        if (json.totalSize !== null) {
+          jsonPromise.resolve(json);
+        } else {
+          jsonPromise.resolve(null);
+        }
+      }, function(err) {
+        jsonPromise.reject(err.message);
+      }
+    );
     return jsonPromise.promise;
   };
   _super.selectDb();
