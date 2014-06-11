@@ -6,7 +6,13 @@ angular.module('collMan').factory('dao',['$http',function($http) {
       if (typeof(name) === 'undefined') {
         name = 'DEFAULT';
       }
-	    return $http.get('get/movie/{name}/{id}'.format({'id': id, 'name': name}));
-	  }
+	    return $http.get('/get/movie/{name}/{id}'.format({'id': id, 'name': name}));
+	  },
+    saveMovie: function(movie, name) {
+      if (typeof(name) === 'undefined') {
+        name = 'DEFAULT';
+      }
+      return $http.post('/add/movie/{name}'.format({'name': name}), {'json': movie});
+    }
   };
 }]);

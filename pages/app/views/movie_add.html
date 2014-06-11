@@ -1,2 +1,7 @@
 <h1>Add Movie</h1>
+<form>
+  <p><label for="movie_add_title">Title:</label><input id="movie_add_title" ng-model="movie.title"/></p>
+  <p><label for="movie_add_countries">Countries:</label><select multiple="multiple" ng-model="movie.countries" ng-options="c.code as c.name for c in countries"></select></p>
+  <p><button ng-click="saveMovie()">Save</button></p>
+</form>
 <a href="/">«« Retour</a>
