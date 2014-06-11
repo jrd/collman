@@ -75,7 +75,7 @@ Json
 
 .. code:: js
 
-  {
+  json = {
     title: TITLE,
     origTitle: TITLE,
     rlzYear: YEAR,

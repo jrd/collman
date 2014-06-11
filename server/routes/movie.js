@@ -36,6 +36,9 @@ router.get('/get/movie/:name/:id', function(req, res) {
 });
 
 router.post('/add/movie/:name', function(req, res) {
+  name = req.params.name;
+  json = req.body.json;
+  console.log(json);
   res.send("To be implemented");
 });
 
