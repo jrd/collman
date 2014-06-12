@@ -225,15 +225,11 @@ var MovieDao = function(dbName) {
       }, fnError('movies'));
     return jsonPromise.promise;
   };
+  _super.saveOrUpdate = function(movie) {
+    throw new Error("movieDao.saveOrUpdate: not implemented");
+  };
   _super.selectDb();
   return _super;
 };
 
-exports.findMovie = function(name, id) {
-  var movieDao = new MovieDao(name);
-  return movieDao.findById(id);
-};
-exports.allMovies = function(name) {
-  var movieDao = new MovieDao(name);
-  return movieDao.findAll();
-};
+module.exports = dao.exportDaoFunctions(MovieDao);

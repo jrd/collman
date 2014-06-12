@@ -8,7 +8,7 @@ var dao = require('../lib/movie_dao');
 /////////////////////////////
 
 router.get('/list/movies/:name', function(req, res) {
-  dao.allMovies(req.params.name).then(
+  dao.findAll(req.params.name).then(
     function(json) {
       if (json === null) {
         json = mocks.moviesCollection;
@@ -22,7 +22,7 @@ router.get('/list/movies/:name', function(req, res) {
 });
 
 router.get('/get/movie/:name/:id', function(req, res) {
-  dao.findMovie(req.params.name, req.params.id).then(
+  dao.findById(req.params.name, req.params.id).then(
     function(json) {
       if (json === null) {
         json = mocks.movie;
@@ -36,10 +36,16 @@ router.get('/get/movie/:name/:id', function(req, res) {
 });
 
 router.post('/add/movie/:name', function(req, res) {
-  name = req.params.name;
-  json = req.body.json;
-  console.log(json);
-  res.send("To be implemented");
+  movie = req.body.json;
+  console.log(movie);
+  dao.saveOrUpdate(req.params.name, movie).then(
+    function(movie) {
+      console.log(movie);
+      res.send("To be implemented");
+    }, function(err) {
+      console.log(err);
+      res.send(err);
+    });
 });
 
 module.exports = router;

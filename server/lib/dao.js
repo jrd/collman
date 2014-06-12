@@ -55,6 +55,26 @@ exports.AbstractDao = function(dbType, dbName) {
     },
     findAll: function() {
       throw new Error("findAll: Not implemented");
+    },
+    saveOrUpdate: function(obj) {
+      throw new Error("saveOrUpdate: Not implemented");
+    }
+  };
+};
+exports.exportDaoFunctions = function(daoClass) {
+  var getDao = function(name) {
+    return new daoClass(name);
+  };
+  return {
+    'getDao': getDao,
+    'findById': function(name, id) {
+      return getDao(name).findById(id);
+    },
+    'findAll': function(name, id) {
+      return getDao(name).findAll();
+    },
+    'saveOrUpdate': function(name, obj) {
+      return getDao(name).saveOrUpdate(obj);
     }
   };
 };

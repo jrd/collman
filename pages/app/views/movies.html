@@ -1,5 +1,7 @@
 <h1>Movies</h1>
-<a href="#/movie/1">Film 1</a><br/>
+<p ng-repeat="movie in movies">
+  <a href="#/movie/{{movie.id}}">{{movie.title}}</a>
+</p>
 <br/>
 <a href="#/movie_add">Ajouter un film</a><br/>
 <a href="/">«« Retour</a>

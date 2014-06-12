@@ -7,8 +7,7 @@ angular.module('collMan').controller('MovieCtrl', ['$scope', '$routeParams', 'da
     console.log('loading Movie' + $routeParams.id);
     var id = $routeParams.id;
     dao.findMovie(id).success(function(res) {
-      console.log(res);
-      $scope.movie = res.data;
+      $scope.movie = res;
       console.log($scope.movie);
     });
   }
