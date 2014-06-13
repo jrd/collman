@@ -1,7 +1,38 @@
 <h1>Add Movie</h1>
-<form>
+<form ng-submit="saveMovie()">
   <p><label for="movie_add_title">Title:</label><input id="movie_add_title" ng-model="movie.title"/></p>
-  <p><label for="movie_add_countries">Countries:</label><select multiple="multiple" ng-model="movie.countries" ng-options="c.code as c.name for c in countries"></select></p>
-  <p><button ng-click="saveMovie()">Save</button></p>
+  <p><label for="movie_add_origtitle">Original Title:</label><input id="movie_add_origtitle" ng-model="movie.origTitle"/></p>
+  <p><label for="movie_add_rlzyear">Release Year:</label><input id="movie_add_rlzyear" type="number" ng-model="movie.rlzYear"/></p>
+  <p><label for="movie_add_length">Length (min):</label><input id="movie_add_length" type="number" ng-model="movie.length"/></p>
+  <p><label for="movie_add_countries">Countries:</label><select id="movie_add_countries" multiple="multiple" ng-model="movie.countries" ng-options="c.code as c.name for c in countries"></select></p>
+  <p>
+    <label for="movie_add_director">Directors:</label><br/>
+    <span ng-repeat="director in movie.directors"><span ng-hide="$first">&nbsp;,&nbsp;</span><span>{{director}}</span><span><a href="javascript:void(0)" ng-click="removeDirector($index)">X</a></span></span>
+    <p><input id="movie_add_director" ng-model="director" ng-enter="addDirector()"/><span><button type="button" ng-click="addDirector()">+</button></span></p>
+  </p>
+  <p>
+    <label for="movie_add_producer">Producers:</label><br/>
+    <span ng-repeat="producer in movie.producers"><span ng-hide="$first">&nbsp;,&nbsp;</span><span>{{producer}}</span><span><a href="javascript:void(0)" ng-click="removeProducer($index)">X</a></span></span>
+    <p><input id="movie_add_producer" ng-model="producer" ng-enter="addProducer()"/><span><button type="button" ng-click="addProducer()">+</button></span></p>
+  </p>
+  <p>
+    <label for="movie_add_actor">Cast:</label><br/>
+    <span ng-repeat="actor in movie.cast"><span ng-hide="$first">&nbsp;,&nbsp;</span><span>{{actor.actor}}</span><span>&nbsp;–&nbsp;</span><span>{{actor.character}}</span><span><a href="javascript:void(0)" ng-click="removeActor($index)">X</a></span></span>
+    <p><input id="movie_add_actor" ng-model="actor.actor" ng-enter="addActor()"/><input id="movie_add_actor_character" ng-model="actor.character" ng-enter="addActor()"/><span><button type="button" ng-click="addActor()">+</button></span></p>
+  </p>
+  <p><label for="movie_add_synopsys">Synopsys:</label><textarea id="movie_add_" ng-model="movie.synopsys"></textarea></p>
+  <p><label for="movie_add_format">Format:</label><select id="movie_add_format" ng-model="movie.format" ng-options="f.code as f.name for f in formats"></select></p>
+  <p>
+    <label for="movie_add_tag">Tags:</label><br/>
+    <span ng-repeat="tag in movie.tags"><span ng-hide="$first">&nbsp;,&nbsp;</span><span>{{tag}}</span><span><a href="javascript:void(0)" ng-click="removeTag($index)">X</a></span></span>
+    <p><input id="movie_add_tag" ng-model="tag" ng-enter="addTag()"/><span><button type="button" ng-click="addTag()">+</button></span></p>
+  </p>
+  <p><label for="movie_add_language">Languages:</label><select id="movie_add_language" multiple="multiple" ng-model="movie.languages" ng-options="l.code as l.name for l in langs"></select></p>
+  <p><label for="movie_add_subtitle">Subtitles:</label><select id="movie_add_subtitle" multiple="multiple" ng-model="movie.subtitles" ng-options="l.code as l.name for l in langs"></select></p>
+  <p><label for="movie_add_region">Region:</label><select id="movie_add_region" ng-model="movie.region" ng-options="r for r in regions"></select></p>
+  <p><label for="movie_add_serie">Serie:</label><input id="movie_add_serie" ng-model="movie.serie"/></p>
+  <p><label for="movie_add_volume">Volume:</label><input id="movie_add_volume" ng-model="movie.volume"/></p>
+  <p><label for="movie_add_nbDisks">Number of disks:</label><input id="movie_add_nbDisks" type="number" ng-model="movie.numberOfDisks"/></p>
+  <p><input type="submit" value="Save"/></p>
 </form>
 <a href="/#/movies">«« Retour</a>
