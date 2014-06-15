@@ -6,19 +6,39 @@
   <p><label for="movie_add_length">Length (min):</label><input id="movie_add_length" type="number" ng-model="movie.length"/></p>
   <p><label for="movie_add_countries">Countries:</label><select id="movie_add_countries" multiple="multiple" ng-model="movie.countries" ng-options="c.code as c.name for c in countries"></select></p>
   <p>
-    <label for="movie_add_director">Directors:</label><br/>
-    <span ng-repeat="director in movie.directors"><span ng-hide="$first">&nbsp;,&nbsp;</span><span>{{director}}</span><span><a href="javascript:void(0)" ng-click="removeDirector($index)">X</a></span></span>
-    <p><input id="movie_add_director" ng-model="director" ng-enter="addDirector()"/><span><button type="button" ng-click="addDirector()">+</button></span></p>
+    <div>Directors:</div>
+    <span ng-repeat="director in movie.directors"><span ng-hide="$first">&nbsp;,&nbsp;</span><span>{{director.firstname}} {{director.lastname}}</span><span><a href="javascript:void(0)" ng-click="removeDirector($index)">X</a></span></span>
+    <p>
+      <label for="movie_add_director_firstname">Firstname:</label>
+      <input id="movie_add_director_firstname" ng-model="director.firstname" ng-enter="addDirector()"/>
+      <label for="movie_add_director_lastname">Lastname:</label>
+      <input id="movie_add_director_lastname" ng-model="director.lastname" ng-enter="addDirector()"/>
+      <span><button type="button" ng-click="addDirector()">+</button></span>
+    </p>
   </p>
   <p>
-    <label for="movie_add_producer">Producers:</label><br/>
-    <span ng-repeat="producer in movie.producers"><span ng-hide="$first">&nbsp;,&nbsp;</span><span>{{producer}}</span><span><a href="javascript:void(0)" ng-click="removeProducer($index)">X</a></span></span>
-    <p><input id="movie_add_producer" ng-model="producer" ng-enter="addProducer()"/><span><button type="button" ng-click="addProducer()">+</button></span></p>
+    <div>Producers:</div>
+    <span ng-repeat="producer in movie.producers"><span ng-hide="$first">&nbsp;,&nbsp;</span><span>{{producer.firstname}} {{producer.lastname}}</span><span><a href="javascript:void(0)" ng-click="removeProducer($index)">X</a></span></span>
+    <p>
+      <label for="movie_add_producer_firstname">Firstname:</label>
+      <input id="movie_add_producer_firstname" ng-model="producer.firstname" ng-enter="addProducer()"/>
+      <label for="movie_add_producer_lastname">Lastname:</label>
+      <input id="movie_add_producer_lastname" ng-model="producer.lastname" ng-enter="addProducer()"/>
+      <span><button type="button" ng-click="addProducer()">+</button></span>
+    </p>
   </p>
   <p>
-    <label for="movie_add_actor">Cast:</label><br/>
-    <span ng-repeat="actor in movie.cast"><span ng-hide="$first">&nbsp;,&nbsp;</span><span>{{actor.actor}}</span><span>&nbsp;–&nbsp;</span><span>{{actor.character}}</span><span><a href="javascript:void(0)" ng-click="removeActor($index)">X</a></span></span>
-    <p><input id="movie_add_actor" ng-model="actor.actor" ng-enter="addActor()"/><input id="movie_add_actor_character" ng-model="actor.character" ng-enter="addActor()"/><span><button type="button" ng-click="addActor()">+</button></span></p>
+    <div>Cast:</div>
+    <span ng-repeat="actor in movie.cast"><span ng-hide="$first">&nbsp;,&nbsp;</span><span>{{actor.actor.firstname}} {{actor.actor.lastname}}</span><span>&nbsp;–&nbsp;</span><span>{{actor.character}}</span><span><a href="javascript:void(0)" ng-click="removeActor($index)">X</a></span></span>
+    <p>
+      <label for="movie_add_actor_firstname">Firstname:</label>
+      <input id="movie_add_actor_firstname" ng-model="actor.actor.firstname" ng-enter="addActor()"/>
+      <label for="movie_add_actor_lastname">Lastname:</label>
+      <input id="movie_add_actor_lastname" ng-model="actor.actor.lastname" ng-enter="addActor()"/>
+      <label for="movie_add_actor_character"> / Character:</label>
+      <input id="movie_add_actor_character" ng-model="actor.character" ng-enter="addActor()"/>
+      <span><button type="button" ng-click="addActor()">+</button></span>
+    </p>
   </p>
   <p><label for="movie_add_synopsys">Synopsys:</label><textarea id="movie_add_" ng-model="movie.synopsys"></textarea></p>
   <p><label for="movie_add_format">Format:</label><select id="movie_add_format" ng-model="movie.format" ng-options="f.code as f.name for f in formats"></select></p>

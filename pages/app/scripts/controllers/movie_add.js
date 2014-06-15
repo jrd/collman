@@ -12,8 +12,8 @@ function getCodeNameList(lst) {
   return ret;
 }
 
-angular.module('collMan').controller('MovieAddCtrl', ['$scope', '$routeParams', 'dao',
-  function ($scope, $routeParams, dao) {
+angular.module('collMan').controller('MovieAddCtrl', ['$scope', '$routeParams', '$location', 'dao',
+  function ($scope, $routeParams, $location, dao) {
     $scope.movie = {
       title: null,
       origTitle: null,
@@ -50,8 +50,8 @@ angular.module('collMan').controller('MovieAddCtrl', ['$scope', '$routeParams', 
       ['fr_FR', 'French'],
       ['it_IT', 'Italian']
     ]);
-    var addToList = function(list, value) {
-      if (value) {
+    var addToList = function(list, value, fnValid) {
+      if (fnValid(value)) {
         list.push(value);
         return true;
       } else {
@@ -61,21 +61,28 @@ angular.module('collMan').controller('MovieAddCtrl', ['$scope', '$routeParams', 
     var removeFromList = function(list, idx) {
       list.splice(idx, 1);
     };
-    $scope.director = '';
-    $scope.addDirector = function() { if (addToList($scope.movie.directors, $scope.director)) { $scope.director = ''; } };
+    var EmptyPerson = function() { return { firstname: '', lastname: ''}; };
+    $scope.director = new EmptyPerson();
+    $scope.addDirector = function() { if (addToList($scope.movie.directors, $scope.director, function(director) {
+      return director.firstname && director.lastname;
+    })) { $scope.director = new EmptyPerson(); } };
     $scope.removeDirector = function(idx) { removeFromList($scope.movie.directors, idx); };
     $scope.producer = '';
-    $scope.addProducer = function() { if (addToList($scope.movie.producers, $scope.producer)) { $scope.producer = ''; } };
+    $scope.addProducer = function() { if (addToList($scope.movie.producers, $scope.producer, function(producer) {
+      return producer.firstname && producer.lastname;
+    })) { $scope.producer = new EmptyPerson(); } };
     $scope.removeProducer = function(idx) { removeFromList($scope.movie.producers, idx); };
-    $scope.actor = {actor: '', character: ''};
-    $scope.addActor = function() { if (addToList($scope.movie.cast, $scope.actor)) { $scope.actor = {actor: '', character: ''}; } };
+    $scope.actor = {actor: new EmptyPerson(), character: ''};
+    $scope.addActor = function() { if (addToList($scope.movie.cast, $scope.actor, function(actor) {
+      return actor.actor.firstname && actor.actor.lastname;
+    })) { $scope.actor = {actor: new EmptyPerson(), character: ''}; } };
     $scope.removeActor = function(idx) { removeFromList($scope.movie.cast, idx); };
     $scope.tag = '';
-    $scope.addTag = function() { if (addToList($scope.movie.tags, $scope.tag)) { $scope.tag = ''; } };
+    $scope.addTag = function() { if (addToList($scope.movie.tags, $scope.tag, function(tag) { return tag && true; })) { $scope.tag = ''; } };
     $scope.removeTag = function(idx) { removeFromList($scope.movie.tags, idx); };
     $scope.saveMovie = function() {
-      dao.saveMovie($scope.movie).success(function(res) {
-        console.log(res);
+      dao.saveMovie($scope.movie).success(function(movieId) {
+        $location.url('movie/{id}'.format({'id': movieId}));
       });
     };
   }
