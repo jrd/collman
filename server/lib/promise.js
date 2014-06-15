@@ -21,6 +21,7 @@ exports.promiseme = function(fnWithCallback, thisVar, withErrorOnFirstArg) {
       if (withErrorOnFirstArg && argsCallback.length > 0 && argsCallback[0] !== null) {
         deffered.reject(argsCallback[0]);
       } else {
+        argsCallback.push(this);
         deffered.resolve(argsCallback);
       }
     });
