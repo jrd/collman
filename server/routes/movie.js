@@ -39,9 +39,9 @@ router.post('/add/movie/:name', function(req, res) {
   movie = req.body.json;
   console.log(movie);
   dao.saveOrUpdate(req.params.name, movie).then(
-    function(movie) {
-      console.log(movie);
-      res.send("To be implemented");
+    function(id) {
+      console.log("movie id = " + id);
+      res.json(id);
     }, function(err) {
       console.log(err);
       res.send(err);
