@@ -37,5 +37,7 @@ WebApp
 .. code:: sh
 
   $ cd pages
+  $ sudo npm install -g grunt-cli
+  $ sudo npm install -g bower
   $ npm install
   $ grunt
