@@ -74,12 +74,12 @@ var MovieDao = Class(dao.AbstractDao, function(__super__, __parent__) {
               json.numberOfDisks = movie.number_of_disks;
             }
           }, fnError),
-        dbAll("SELECT code FROM MovieCountry WHERE movie_id=$id", { $id: id }).then(
+        dbAll("SELECT c.code, c.name FROM MovieCountry mc, Country c WHERE mc.movie_id=$id and mc.code = c.code", { $id: id }).then(
           function(ctx) {
             var countries = ctx[1];
             if (!error && countries && countries.length) {
               json.countries = countries.map(function (country) {
-                return country.code;
+                return {'code': country.code, 'name': country.name};
               });
             }
           }, fnError),
@@ -88,7 +88,7 @@ var MovieDao = Class(dao.AbstractDao, function(__super__, __parent__) {
             var directors = ctx[1];
             if (!error && directors && directors.length) {
               json.directors = directors.map(function (director) {
-                return director.firstname + ' ' + director.lastname;
+                return {'firstname': director.firstname, 'lastname': director.lastname};
               });
             }
           }, fnError),
@@ -97,7 +97,7 @@ var MovieDao = Class(dao.AbstractDao, function(__super__, __parent__) {
             var producers = ctx[1];
             if (!error && producers && producers.length) {
               json.producers = producers.map(function (producer) {
-                return producer.firstname + ' ' + producer.lastname;
+                return {'firstname': producer.firstname, 'lastname': producer.lastname};
               });
             }
           }, fnError),
@@ -106,7 +106,7 @@ var MovieDao = Class(dao.AbstractDao, function(__super__, __parent__) {
             var actors = ctx[1];
             if (!error && actors && actors.length) {
               json.cast = actors.map(function (actor) {
-                return {actor: actor.firstname + ' ' + actor.lastname, character: actor.character};
+                return {actor: {'firstname': actor.firstname, 'lastname': actor.lastname}, character: actor.character};
               });
             }
           }, fnError),

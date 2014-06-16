@@ -1,14 +1,26 @@
 <div class="movie">
-<h1>Movie: {{movie.title}}</h1>
-<div class=synopsis">
-{{movie.synopsys}}
-</div>
-<div class="keyvalue">
-<div class="key">Titre original :</div><div class="value">{{movie.origTitle}}</div>
-<div class="key">Année :</div><div class="value">{{movie.rlzYear}}</div>
-<div class="key">Durée :</div><div class="value">{{movie.length}} minutes</div>
-
-</div>
-
+  <form>
+    <h1>{{movie.title}}</h1>
+    <div class="synopsys">{{movie.synopsys}}</div>
+    <div class="keyvalue">
+      <div class="key">Original Title:</div><div class="value">{{movie.origTitle}}</div>
+      <div ng-show="movie.serie">
+        <div class="key">Serie:</div><div class="value">{{movie.serie}}</div>
+        <div ng-show="movie.volume"><div class="key">Volume:</div><div class="value">{{movie.volume}}</div></div>
+      </div>
+      <div class="key">Disks:</div><div class="value"><ng-pluralize count="movie.numberOfDisks" when="{'0': 'no disc', 'one': '1 disk', 'other': '{} disks'}"></ng-pluralize></div>
+      <div class="key">Release Year:</div><div class="value">{{movie.rlzYear}}</div>
+      <div class="key">Length:</div><div class="value">{{movie.length}} minutes</div>
+      <div class="key">Format:</div><div class="value">{{movie.format}}<span ng-show="movie.region"> (zone {{movie.region}})</span></div>
+      <div class="key">Countries:</div><div class="value"><span ng-repeat="c in movie.countries"><span ng-hide="$first">, </span>{{c.name}}</span></div>
+      <div class="key">Languages:</div><div class="value"><span ng-repeat="l in movie.languages"><span ng-hide="$first">, </span>{{l.name}}</span></div>
+      <div class="key">Subtitles:</div><div class="value"><span ng-repeat="l in movie.subtitles"><span ng-hide="$first">, </span>{{l.name}}</span></div>
+      <div class="key">Directors:</div><div class="value"><span ng-repeat="d in movie.directors"><span ng-hide="$first">, </span>{{d.firstname}} {{d.lastname}}</span></div>
+      <div class="key">Producers:</div><div class="value"><span ng-repeat="p in movie.producers"><span ng-hide="$first">, </span>{{p.firstname}} {{p.lastname}}</span></div>
+      <div class="key">Cast:</div><div class="value"><span ng-repeat="c in movie.cast"><span ng-hide="$first">, </span>{{c.actor.firstname}} {{c.actor.lastname}}<span ng-show="c.character"> ({{c.character}})</span></span></div>
+      <div class="key">Tags:</div><div class="value"><span ng-repeat="tag in movie.tags"><span ng-hide="$first">, </span>{{tag}}</span></div>
+      <div class="clear"></div>
+    </div>
+  </form>
 </div>
 <a href="/#/movies">«« Retour</a>
